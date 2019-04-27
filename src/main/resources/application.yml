@@ -1,0 +1,13 @@
+spring:
+  jackson:
+    serialization:
+      write-dates-as-timestamps: true
+      write-date-timestamps-as-nanoseconds: false
+
+logging:
+  level:
+    org:
+      springframework:
+        web: debug
+    io.github.cepr0: debug
+

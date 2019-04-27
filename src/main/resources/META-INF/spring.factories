@@ -1,0 +1,5 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+io.github.cepr0.common.error.ApiExceptionFactory,\
+io.github.cepr0.common.error.ExceptionsHandler,\
+io.github.cepr0.common.message.MessageConfig,\
+io.github.cepr0.common.WebConfig

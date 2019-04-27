@@ -1,0 +1,83 @@
+# For a quick start check out our HTTP Requests collection (Tools|HTTP Client|Open HTTP Requests Collection).
+#
+# Following HTTP Request Live Templates are available:
+# * 'gtrp' and 'gtr' create a GET request with or without query parameters;
+# * 'ptr' and 'ptrp' create a POST request with a simple or parameter-like body;
+# * 'mptr' and 'fptr' create a POST request to submit a form with a text or file field (multipart/form-data);
+
+
+# Correct request
+POST http://localhost:8080/demo
+Content-Type: application/json
+
+{
+  "num": 1,
+  "text": "text"
+}
+
+###
+
+# Incorrect body
+POST http://localhost:8080/demo
+Content-Type: application/json
+
+{
+  "num": 1
+  "text": "text"
+}
+
+###
+
+# Incorrect num value
+POST http://localhost:8080/demo
+Content-Type: application/json
+
+{
+  "num": 0,
+  "text": "text"
+}
+
+###
+
+# Text value too short
+POST http://localhost:8080/demo
+Content-Type: application/json
+
+{
+  "num": 1,
+  "text": "tex"
+}
+
+###
+
+# Text value too big
+POST http://localhost:8080/demo
+Content-Type: application/json
+
+{
+  "num": 1,
+  "text": "text1234"
+}
+
+###
+
+# Property num is null
+POST http://localhost:8080/demo
+Content-Type: application/json
+
+{
+  "num": null,
+  "text": "text"
+}
+
+###
+# Property text is empty
+POST http://localhost:8080/demo
+Content-Type: application/json
+
+{
+  "num": 1,
+  "text": ""
+}
+
+###
