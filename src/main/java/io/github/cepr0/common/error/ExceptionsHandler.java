@@ -32,7 +32,7 @@ public class ExceptionsHandler extends ResponseEntityExceptionHandler {
 
 	private static final String VALIDATION_FAILED = "validation.failed";
 
-	private final MessageSupplierMap messageSuppliers = new MessageSupplierMap();
+	private final ExceptionHandlerMap exceptionHandlers = new ExceptionHandlerMap();
 	private final MessageProvider mp;
 
 	public ExceptionsHandler(final MessageProvider mp) {
@@ -41,23 +41,28 @@ public class ExceptionsHandler extends ResponseEntityExceptionHandler {
 	}
 
 	public <E extends Exception> void addHandler(final Class<E> ex, final Function<E, ApiErrorMessage> handler) {
-		messageSuppliers.put(ex, handler);
+		exceptionHandlers.put(ex, handler);
 	}
 
 // ====================================================================================================================
 
 	@NonNull
 	@Override
-	protected ResponseEntity<Object> handleExceptionInternal(@NonNull final Exception ex, final Object body, final HttpHeaders headers, final HttpStatus status, @NonNull final WebRequest request) {
-
+	protected ResponseEntity<Object> handleExceptionInternal(
+			@NonNull final Exception ex,
+			final Object body,
+			final HttpHeaders headers,
+			final HttpStatus status,
+			@NonNull final WebRequest request
+	) {
 		ApiErrorMessage errorMessage;
 
-		var messageSupplier = messageSuppliers.get(ex.getClass());
-		if (messageSupplier != null) {
+		var handler = exceptionHandlers.get(ex.getClass());
+		if (handler != null) {
 			logHandling(ex, (ServletWebRequest) request);
-			errorMessage = messageSupplier.apply(ex);
+			errorMessage = handler.apply(ex);
 		} else {
-			log.error("[!] Non overridden exception: {}", ex.toString());
+			log.error("[!] Not overridden exception: {}", ex.toString());
 			errorMessage = ApiErrorMessage.builder()
 					.httpStatus(status)
 					.message(ex.getMessage())
@@ -136,7 +141,7 @@ public class ExceptionsHandler extends ResponseEntityExceptionHandler {
 
 // --------------------------------------------------------------------------------------------------------------------
 
-	private class MessageSupplierMap {
+	private class ExceptionHandlerMap {
 
 		final Map<Class<? extends Exception>, Function<? extends Exception, ApiErrorMessage>> map = new ConcurrentHashMap<>();
 

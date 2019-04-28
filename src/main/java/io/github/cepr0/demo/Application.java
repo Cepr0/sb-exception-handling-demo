@@ -10,11 +10,13 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
 import javax.validation.Valid;
 import java.util.Locale;
 
 import static io.github.cepr0.common.error.ApiErrorMessage.badRequest;
+import static io.github.cepr0.common.error.ApiErrorMessage.notFound;
 
 @RestController
 @RequestMapping("demo")
@@ -32,6 +34,12 @@ public class Application {
 		exceptionsHandler.addHandler(
 				HttpMessageNotReadableException.class,
 				ex -> badRequest(mp.getLocalizedMessage("request.invalid-body"))
+		);
+
+		// NoHandlerFoundException custom handler
+		exceptionsHandler.addHandler(
+				NoHandlerFoundException.class,
+				ex -> notFound(mp.getLocalizedMessage("request.path-unsupported"))
 		);
 	}
 
