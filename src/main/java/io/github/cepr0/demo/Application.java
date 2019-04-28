@@ -36,6 +36,7 @@ public class Application {
 				ex -> badRequest(mp.getLocalizedMessage("request.invalid-body"))
 		);
 
+		// https://stackoverflow.com/a/48312952
 		// NoHandlerFoundException custom handler
 		exceptionsHandler.addHandler(
 				NoHandlerFoundException.class,
