@@ -1,8 +1,10 @@
 spring:
+  # https://stackoverflow.com/a/48312952
   resources:
     add-mappings: false
   mvc:
     throw-exception-if-no-handler-found: true
+
   jackson:
     serialization:
       write-dates-as-timestamps: true

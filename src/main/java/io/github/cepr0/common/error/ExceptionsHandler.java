@@ -141,7 +141,7 @@ public class ExceptionsHandler extends ResponseEntityExceptionHandler {
 
 // --------------------------------------------------------------------------------------------------------------------
 
-	private class ExceptionHandlerMap {
+	private static class ExceptionHandlerMap {
 
 		final Map<Class<? extends Exception>, Function<? extends Exception, ApiErrorMessage>> map = new ConcurrentHashMap<>();
 

@@ -20,8 +20,6 @@ public class MessageProvider {
 
 	@NonNull
 	public String getLocalizedMessage(@NonNull String codeOrMessage, Object... args) {
-		// Never return null because the method has non-null default message
-		//noinspection ConstantConditions
 		return messageSource.getMessage(
 				codeOrMessage,
 				args,
