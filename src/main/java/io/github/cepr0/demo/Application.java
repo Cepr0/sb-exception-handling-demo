@@ -1,5 +1,6 @@
 package io.github.cepr0.demo;
 
+import io.github.cepr0.common.error.ApiErrorMessage;
 import io.github.cepr0.common.error.ApiExceptionFactory;
 import io.github.cepr0.common.error.ExceptionsHandler;
 import io.github.cepr0.common.message.MessageProvider;
@@ -42,6 +43,17 @@ public class Application {
 				NoHandlerFoundException.class,
 				ex -> notFound(mp.getLocalizedMessage("request.path-unsupported"))
 		);
+
+		exceptionsHandler.addHandler(
+				UnsupportedOperationException.class,
+				ex -> {
+					if (ex.getMessage().startsWith("Number must not be negative")) {
+						return ApiErrorMessage.badRequest(mp.getLocalizedMessage("request.num-negative"));
+					}
+					return ApiErrorMessage.internalServerError(ex.getMessage());
+				}
+		);
+
 	}
 
 	public static void main(String[] args) {
@@ -62,6 +74,14 @@ public class Application {
 
 		if (model.getText().length() > 4) {
 			throw new InvalidPropertyException(mp.getLocalizedMessage("model.big-text"));
+		}
+
+		if (model.getNum() < 0) {
+			throw new UnsupportedOperationException("Number must not be negative");
+		}
+
+		if (model.getNum() > 10) {
+			throw new UnsupportedOperationException("Number must not be greater than 10");
 		}
 
 		return model;

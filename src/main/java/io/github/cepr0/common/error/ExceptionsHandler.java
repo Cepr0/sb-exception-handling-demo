@@ -24,6 +24,8 @@ import java.util.function.Function;
 
 import static org.springframework.core.NestedExceptionUtils.getMostSpecificCause;
 import static org.springframework.core.Ordered.HIGHEST_PRECEDENCE;
+import static org.springframework.core.Ordered.LOWEST_PRECEDENCE;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 @Slf4j
 @ControllerAdvice
@@ -71,12 +73,24 @@ public class ExceptionsHandler extends ResponseEntityExceptionHandler {
 		return super.handleExceptionInternal(ex, errorMessage, headers, errorMessage.getHttpStatus(), request);
 	}
 
-//	@Order(LOWEST_PRECEDENCE)
-//	@ExceptionHandler(Exception.class)
-//	ResponseEntity<?> handleException(Exception ex, ServletWebRequest request) {
-//		log.error("[!] Unhandled exception: " + getMostSpecificCause(ex).toString(), ex);
-//		return super.handleExceptionInternal(ex, internalServerError(ex.getMessage()), null, INTERNAL_SERVER_ERROR, request);
-//	}
+	@Order(LOWEST_PRECEDENCE)
+	@ExceptionHandler(Exception.class)
+	ResponseEntity<?> handleException(Exception ex, ServletWebRequest request) {
+		ApiErrorMessage errorMessage;
+
+		var handler = exceptionHandlers.get(ex.getClass());
+		if (handler != null) {
+			logHandling(ex, request);
+			errorMessage = handler.apply(ex);
+		} else {
+			log.error("[!] Unhandled exception: " + getMostSpecificCause(ex).toString(), ex);
+			errorMessage = ApiErrorMessage.builder()
+					.httpStatus(INTERNAL_SERVER_ERROR)
+					.message(ex.getMessage())
+					.build();
+		}
+		return super.handleExceptionInternal(ex, errorMessage, null, errorMessage.getHttpStatus(), request);
+	}
 
 // ====================================================================================================================
 

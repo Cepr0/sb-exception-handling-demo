@@ -92,3 +92,14 @@ Content-Type: application/json
 }
 
 ###
+
+# Num is negative
+POST http://localhost:8080/demo
+Content-Type: application/json
+
+{
+  "num": -1,
+  "text": "text"
+}
+
+###
